@@ -1,5 +1,7 @@
 module.exports = (robot) => {
-  robot.on('pull_request', async context => {
+  robot.on('pull_request', mergeProductionBranch);
+
+  async function mergeProductionBranch(context) {
     const {
       payload,
       github,
@@ -20,31 +22,31 @@ module.exports = (robot) => {
     } finally {
       return action;
     }
-  });
-}
+  }
 
-function createMerge(issue, github) {
-  const config = issue({
-    base,
-    head
-  });
+  function createMerge(issue, github) {
+    const config = issue({
+      base,
+      head
+    });
 
-  return github.repos.merge(config);
-}
+    return github.repos.merge(config);
+  }
 
-function createPullRequest(issue, github) {
-  const config = issue({
-    title: 'Merge with master - Conflict!',
-    head,
-    base
-  });
+  function createPullRequest(issue, github) {
+    const config = issue({
+      title: 'Merge with master - Conflict!',
+      head,
+      base
+    });
 
-  return github.pullRequests.create(config);
-}
+    return github.pullRequests.create(config);
+  }
 
-function isValidPullRequest(payload) {
-  const isMerged = payload.action === 'closed' && payload.pull_request.merged;
-  const isCofigBranch = payload.pull_request.base.ref === 'master';
+  function isValidPullRequest(payload) {
+    const isMerged = payload.action === 'closed' && payload.pull_request.merged;
+    const isCofigBranch = payload.pull_request.base.ref === 'master';
 
-  return isMerged && isConfigBranch;
+    return isMerged && isConfigBranch;
+  }
 }
