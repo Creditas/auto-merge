@@ -1,5 +1,5 @@
 {
-  "name": "Auto Merge",
+  "name": "auto-merge",
   "version": "1.0.0",
   "description": "",
   "author": "Enzo Toshio <enzo.toshiba@gmail.com>",
@@ -19,7 +19,7 @@
     "standard": "^10.0.3"
   },
   "engines": {
-    "node": ">= 7.7.0",
+    "node": "7.7.3",
     "npm": ">= 4.0.0"
   }
 }
