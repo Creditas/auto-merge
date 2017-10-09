@@ -1,5 +1,10 @@
 module.exports = (robot) => {
-  robot.on('release', async context => {
+  robot.on('pull_request', async context => {
+    const isMerged = context.action === 'closed' && context.pull_request.merged;
+    const isMaster = context.pull_request.base.ref === 'master';
+
+    if(!isMerged || !isMaster) return;
+
     let action;
     const head = 'master';
     const base = 'develop';
