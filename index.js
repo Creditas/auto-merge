@@ -1,7 +1,8 @@
 module.exports = (robot) => {
   robot.on('pull_request', async context => {
-    const isMerged = context.payload.action === 'closed' && context.payload.pull_request.merged;
-    const isMaster = context.payload.pull_request.base.ref === 'master';
+    const { payload, github, issue } = context;
+    const isMerged = payload.action === 'closed' && payload.pull_request.merged;
+    const isMaster = payload.pull_request.base.ref === 'master';
 
     if(!isMerged || !isMaster) return;
 
@@ -10,16 +11,20 @@ module.exports = (robot) => {
     const base = 'develop';
 
     try {
-      action = context.github.repos.merge(context.issue({
+      const merge = issue({
         base,
         head
-      }));
+      });
+
+      action = await github.repos.merge(merge);
     } catch (e) {
-      action = constext.github.pullRequests.create({
-        title: 'Merge with master - conflict!',
+      const pullRequest = issue({
+        title: 'Merge with master - Conflict!',
         head,
         base
       });
+
+      action = await github.pullRequests.create(pullRequest);
     } finally {
       return action;
     }
